@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * 这个类是给 SugoAPI 发送的 message 事件创建适当形式的 JSONObjects。
+ * 这个类是给 SugoAPI 发送的 message 事件创建适当形式的 JSONObjects（生产数据）
  * 这个类的实例可以单独实例化，和 SugoAPI 的对象分开
  * 因此这些 message 可以从适当的队列中得到，或者通过本地网络发送
  */

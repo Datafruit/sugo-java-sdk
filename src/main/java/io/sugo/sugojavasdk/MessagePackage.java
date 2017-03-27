@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 一个 MessagePackage 可以用来发送多个 messages 到 Sugo.
+ * 一个 MessagePackage 可以用来发送多个 messages 到 Sugo.（装载数据）
  */
 public class MessagePackage {
 
