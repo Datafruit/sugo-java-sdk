@@ -90,7 +90,7 @@ public class SugoAPI {
      * @return encoded string for <b>data</b> parameter in API call
      * @throws NullPointerException If {@code dataString} is {@code null}
      */
-    private static String encodeDataString(String dataString) {
+    static String encodeDataString(String dataString) {
         try {
             byte[] utf8data = dataString.getBytes("utf-8");
             String base64data = new String(Base64.encode(utf8data));

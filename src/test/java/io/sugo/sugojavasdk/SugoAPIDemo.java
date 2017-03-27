@@ -39,21 +39,21 @@ public class SugoAPIDemo {
                         // 读取队列中数据暂存到 MessagePackage 中
                         message = mMessageQueue.poll();
                         if (message != null) {
-                            System.out.println("WILL SEND MESSAGE:\n" + message.toString());
+                            System.out.println("将要发送的数据:\n" + message.toString());
                             messageCount = messageCount + 1;
                             messages.addMessage(message);
                         }
                     } while (message != null);
                     // 将刚才暂存数据的 MessagePackage 发送出去
                     mSugoAPI.sendMessages(messages);
-                    System.out.println("Sent " + messageCount + " messages.");
+                    System.out.println("发送了 " + messageCount + " 条数据.");
                     // 每隔一段时间去读取数据队列
                     Thread.sleep(MILLIS_TO_WAIT);
                 }
             } catch (IOException e) {
-                throw new RuntimeException("Can't communicate with Mixpanel.", e);
+                throw new RuntimeException("发送数据失败.", e);
             } catch (InterruptedException e) {
-                System.out.println("Message process interrupted.");
+                System.out.println("数据发送线程已经中断.");
             }
         }
     }
