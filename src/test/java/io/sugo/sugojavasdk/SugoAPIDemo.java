@@ -24,7 +24,7 @@ public class SugoAPIDemo {
         private final Queue<JSONObject> mMessageQueue;
 
         public SendingThread(Queue<JSONObject> messageQueue) {
-            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("E:\\testLog"));
+            mSugoAPI = new SugoAPI(new SugoAPI.FileSender());
             mMessageQueue = messageQueue;
         }
 

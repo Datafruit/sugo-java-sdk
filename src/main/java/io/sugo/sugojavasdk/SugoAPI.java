@@ -1,6 +1,7 @@
 package io.sugo.sugojavasdk;
 
 import com.sun.istack.internal.NotNull;
+import org.apache.log4j.PropertyConfigurator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -8,11 +9,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -192,66 +190,51 @@ public class SugoAPI {
 
     public static class FileSender implements Sender {
 
-        private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        private final SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH-mm-ss-SSS");
+        static {
+            Properties properties = new Properties();
+            properties.put("log4j.rootLogger", "INFO,consoleAppender,fileAppender");
+//            properties.put("log4j.rootLogger","INFO,consoleAppender,dailyFileAppender");
 
-        private final String mMsgDirectory;
+            properties.put("log4j.appender.consoleAppender", "org.apache.log4j.ConsoleAppender");
+            properties.put("log4j.appender.consoleAppender.Threshold", "INFO");
+            properties.put("log4j.appender.consoleAppender.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.consoleAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss SSS} ->[%t]--[%-5p]--[%c{1}]--%m%n");
 
-        public FileSender(String msgDirectory) {
-            mMsgDirectory = msgDirectory;
+            properties.put("log4j.appender.fileAppender", "org.apache.log4j.RollingFileAppender");
+            properties.put("log4j.appender.fileAppender.File", "./sugo_message/message");
+            properties.put("log4j.appender.fileAppender.Threshold", "INFO");
+            properties.put("log4j.appender.fileAppender.Encoding", "UTF-8");
+            properties.put("log4j.appender.fileAppender.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.fileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
+            properties.put("log4j.appender.fileAppender.MaxBackupIndex", "50");
+            properties.put("log4j.appender.fileAppender.MaxFileSize", "10MB");
+            properties.put("log4j.appender.fileAppender.Append", "true");
+
+            properties.put("log4j.appender.dailyFileAppender", "org.apache.log4j.DailyRollingFileAppender");
+            properties.put("log4j.appender.dailyFileAppender.File", "./sugo_message/message");
+            properties.put("log4j.appender.dailyFileAppender.DatePattern", "'_'yyyy-MM-dd'.log'");
+            properties.put("log4j.appender.dailyFileAppender.Threshold", "INFO");
+            properties.put("log4j.appender.dailyFileAppender.Encoding", "UTF-8");
+            properties.put("log4j.appender.dailyFileAppender.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.dailyFileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
+            properties.put("log4j.appender.dailyFileAppender.Append", "true");
+
+            PropertyConfigurator.configure(properties);
+
+        }
+
+        private final org.slf4j.Logger mLogger = org.slf4j.LoggerFactory.getLogger(FileSender.class);
+
+        public FileSender() {
+
         }
 
         public boolean sendData(String dataString) {
-            boolean result = true;
             if (dataString == null) {
                 return false;
             }
-
-            String file = generateFile();
-            // 因为文件生成最细粒度是毫秒，而文件是以覆盖形式写入，
-            // 所以不能 1ms 内生成两次文件，所以推荐使用 MessagePackage 批量写入。
-            FileOutputStream outputStream = null;// = new FileOutputStream(file, false);
-            FileLock lock = null;
-            try {
-                outputStream = new FileOutputStream(file, false);
-                final FileChannel channel = outputStream.getChannel();
-                lock = channel.lock(0, Long.MAX_VALUE, false);
-                outputStream.write(dataString.getBytes("UTF-8"));
-            } catch (IOException e) {
-                SugoConfig.log.warning("fail to write file: " + e);
-                result = false;
-            } finally {
-                if (lock != null) {
-                    try {
-                        lock.release();
-                    } catch (IOException e) {
-                        SugoConfig.log.warning("fail to release file lock: " + e);
-                    }
-                }
-                try {
-                    if (outputStream != null) {
-                        outputStream.close();
-                        SugoConfig.log.info("closed file. filename=" + file);
-                    }
-                } catch (IOException e) {
-                    SugoConfig.log.warning("fail to close output stream: " + e);
-                }
-            }
-            return result;
-        }
-
-        private String generateFile() {
-            Date now = new Date();
-            String today = simpleDateFormat.format(now);
-            String dir = mMsgDirectory + File.separator + today;
-            File dirFile = new File(dir);
-            if (!dirFile.exists() && !dirFile.isDirectory()) {
-                dirFile.mkdirs();
-            }
-            String time = simpleTimeFormat.format(now);
-            String fileName = dir + File.separator + time;
-            SugoConfig.log.info("generate file. filename=" + fileName);
-            return fileName;
+            mLogger.info(dataString);
+            return true;
         }
 
     }
