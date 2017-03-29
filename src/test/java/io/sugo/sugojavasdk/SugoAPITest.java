@@ -98,9 +98,9 @@ public class SugoAPITest extends TestCase {
     }
 
     public void testClientDelivery() {
-        MessagePackage c = new MessagePackage();
+        MessagePackage messagePackage = new MessagePackage();
         try {
-            c.addMessage(mSampleProps);
+            messagePackage.addMessage(mSampleProps);
             fail("addMessage did not throw");
         } catch (SugoMessageException e) {
             // This is expected, we pass
@@ -108,7 +108,7 @@ public class SugoAPITest extends TestCase {
 
         try {
             JSONObject event = mBuilder.event("a distinct id", "login", mSampleProps);
-            c.addMessage(event);
+            messagePackage.addMessage(event);
 
         } catch (SugoMessageException e) {
             fail("Threw exception on valid message");
@@ -132,6 +132,7 @@ public class SugoAPITest extends TestCase {
         }
     }
 
+    // 空数据包不会发送
     public void testEmptyDelivery() {
         SugoAPI api = new SugoAPI(new SugoAPI.ConsoleSender()) {
             @Override
@@ -141,9 +142,9 @@ public class SugoAPITest extends TestCase {
             }
         };
 
-        MessagePackage c = new MessagePackage();
+        MessagePackage messagePackage = new MessagePackage();
         try {
-            api.sendMessages(c);
+            api.sendMessages(messagePackage);
         } catch (IOException e) {
             throw new RuntimeException("Apparently impossible IOException thrown", e);
         }
@@ -160,7 +161,7 @@ public class SugoAPITest extends TestCase {
             }
         };
 
-        MessagePackage c = new MessagePackage();
+        MessagePackage messagePackage = new MessagePackage();
         int expectLeftovers = SugoConfig.MAX_MESSAGE_SIZE - 1;
         int totalToSend = (SugoConfig.MAX_MESSAGE_SIZE * 2) + expectLeftovers;
         for (int i = 0; i < totalToSend; i++) {
@@ -168,11 +169,11 @@ public class SugoAPITest extends TestCase {
             propsMap.put("count", i);
             JSONObject props = new JSONObject(propsMap);
             JSONObject message = mBuilder.event("a distinct id", "counted", props);
-            c.addMessage(message);
+            messagePackage.addMessage(message);
         }
 
         try {
-            api.sendMessages(c);
+            api.sendMessages(messagePackage);
         } catch (IOException e) {
             throw new RuntimeException("Apparently impossible IOException", e);
         }

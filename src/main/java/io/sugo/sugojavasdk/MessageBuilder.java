@@ -10,8 +10,6 @@ import org.json.JSONObject;
  */
 public class MessageBuilder {
 
-    private static final String ENGAGE_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-
     private final String mToken;
 
     public MessageBuilder(String token) {
@@ -47,18 +45,14 @@ public class MessageBuilder {
 
             if (!propertiesObj.has("token")) propertiesObj.put("token", mToken);
             if (!propertiesObj.has("time")) propertiesObj.put("time", time);
-            if (!propertiesObj.has("mp_lib")) propertiesObj.put("mp_lib", "jdk");
+            if (!propertiesObj.has("sugo_lib")) propertiesObj.put("sugo_lib", "jdk");
 
             if (distinctId != null)
                 propertiesObj.put("distinct_id", distinctId);
 
             dataObj.put("properties", propertiesObj);
 
-            JSONObject envelope = new JSONObject();
-            envelope.put("envelope_version", 1);
-            envelope.put("message_type", "event");
-            envelope.put("message", dataObj);
-            return envelope;
+            return dataObj;
         } catch (JSONException e) {
             throw new RuntimeException("Can't construct a Sugo message", e);
         }
