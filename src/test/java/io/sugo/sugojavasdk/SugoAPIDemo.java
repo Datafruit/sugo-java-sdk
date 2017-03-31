@@ -66,11 +66,11 @@ public class SugoAPIDemo {
 
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            String value = scanner.nextLine();
+            String name = scanner.nextLine();  // 不断从控制台输入读取一行数据
             JSONObject props = new JSONObject();
-            props.put("key", value);
+            props.put(name + "_key", name + "_value");
             // 产生数据
-            JSONObject message = messageBuilder.event("your distinct id", "testEventName", props);
+            JSONObject message = messageBuilder.event("your distinct id", name, props);
             messageQueue.add(message);
         }
 

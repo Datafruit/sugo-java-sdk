@@ -17,10 +17,6 @@ Java SDK of Sugo
 **4 发送方式** (`Sender`)  
 数据可以被发送至终端服务器，也可以保存为文件，这取决于`SugoAPI`构造函数的参数。   
 
-- `HttpSender`  
-将数据发送到指定终端   
-
-
 - `FileSender`   
 将数据保存到指定目录下，以每天日期生成子目录，目录名规则为 yyyy-MM-dd，   
 每次发送数据将在该子目录下生成一个文件，文件名规则为 HH-mm-ss-SSS   
@@ -29,6 +25,9 @@ Java SDK of Sugo
 - `ConsoleSender`  
 将发送的数据直接输出到控制台   
 
+
+- `HttpSender`  
+将数据发送到指定终端   
 
 
 **输出数据格式**   
@@ -50,9 +49,15 @@ Java SDK of Sugo
 ```   
 输出的数据如下：   
 
-```json
-[
-  {
+```json   
+
+2017-03-29 21:04:57--[{"event":"testEventName","properties":{"distinct_id":"your distinct id","time":1490792691,"sugo_lib":"jdk","token":"project token","key":"value"}}]
+
+```  
+
+单条数据格式：   
+```json   
+{
     "event": "testEventName",
     "properties": {
       "distinct_id": "your distinct id",
@@ -61,7 +66,5 @@ Java SDK of Sugo
       "token": "project token",
       "key": "value"
     }
-  }
-]
-```  
-
+}
+```

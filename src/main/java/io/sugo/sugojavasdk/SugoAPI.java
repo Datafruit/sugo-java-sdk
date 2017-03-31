@@ -190,8 +190,33 @@ public class SugoAPI {
 
     public static class FileSender implements Sender {
 
-        static {
+        private final org.slf4j.Logger mLogger;
+
+        public FileSender() {
+            this(SugoConfig.sMessageFile, SugoConfig.sMaxBackupIndex, SugoConfig.sMaxFileSize);
+        }
+
+        public FileSender(String messageFile) {
+            this(messageFile, SugoConfig.sMaxBackupIndex, SugoConfig.sMaxFileSize);
+        }
+
+        /**
+         * @param messageFile 存放 message 数据的文件名字（超过存量之后，会被转移到 .1 .2 之类后缀的文件里）
+         * @param maxBackup   最大的文件数量
+         * @param maxFileSize 数据文件的容量限度
+         */
+        public FileSender(String messageFile, String maxBackup, String maxFileSize) {
+            if (messageFile == null || messageFile.equals("")) {
+                messageFile = SugoConfig.sMessageFile;
+            }
+            if (maxBackup == null || maxBackup.equals("")) {
+                maxBackup = SugoConfig.sMaxBackupIndex;
+            }
+            if (maxFileSize == null || maxFileSize.equals("")) {
+                maxFileSize = SugoConfig.sMaxFileSize;
+            }
             Properties properties = new Properties();
+//            properties.put("log4j.rootLogger", "INFO,consoleAppender");
             properties.put("log4j.rootLogger", "INFO,consoleAppender,fileAppender");
 //            properties.put("log4j.rootLogger","INFO,consoleAppender,dailyFileAppender");
 
@@ -201,32 +226,25 @@ public class SugoAPI {
             properties.put("log4j.appender.consoleAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss SSS} ->[%t]--[%-5p]--[%c{1}]--%m%n");
 
             properties.put("log4j.appender.fileAppender", "org.apache.log4j.RollingFileAppender");
-            properties.put("log4j.appender.fileAppender.File", "./sugo_message/message");
+            properties.put("log4j.appender.fileAppender.File", messageFile);
             properties.put("log4j.appender.fileAppender.Threshold", "INFO");
             properties.put("log4j.appender.fileAppender.Encoding", "UTF-8");
             properties.put("log4j.appender.fileAppender.layout", "org.apache.log4j.PatternLayout");
             properties.put("log4j.appender.fileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
-            properties.put("log4j.appender.fileAppender.MaxBackupIndex", "50");
-            properties.put("log4j.appender.fileAppender.MaxFileSize", "10MB");
-            properties.put("log4j.appender.fileAppender.Append", "true");
+            properties.put("log4j.appender.fileAppender.MaxBackupIndex", maxBackup);
+            properties.put("log4j.appender.fileAppender.MaxFileSize", maxFileSize);
 
             properties.put("log4j.appender.dailyFileAppender", "org.apache.log4j.DailyRollingFileAppender");
-            properties.put("log4j.appender.dailyFileAppender.File", "./sugo_message/message");
+            properties.put("log4j.appender.dailyFileAppender.File", messageFile);
             properties.put("log4j.appender.dailyFileAppender.DatePattern", "'_'yyyy-MM-dd'.log'");
             properties.put("log4j.appender.dailyFileAppender.Threshold", "INFO");
             properties.put("log4j.appender.dailyFileAppender.Encoding", "UTF-8");
             properties.put("log4j.appender.dailyFileAppender.layout", "org.apache.log4j.PatternLayout");
             properties.put("log4j.appender.dailyFileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
-            properties.put("log4j.appender.dailyFileAppender.Append", "true");
 
             PropertyConfigurator.configure(properties);
 
-        }
-
-        private final org.slf4j.Logger mLogger = org.slf4j.LoggerFactory.getLogger(FileSender.class);
-
-        public FileSender() {
-
+            mLogger = org.slf4j.LoggerFactory.getLogger(FileSender.class);
         }
 
         public boolean sendData(String dataString) {
