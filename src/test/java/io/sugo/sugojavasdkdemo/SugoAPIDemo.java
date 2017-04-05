@@ -29,7 +29,8 @@ public class SugoAPIDemo {
         private final Queue<JSONObject> mMessageQueue;
 
         public SendingThread(Queue<JSONObject> messageQueue) {
-            mSugoAPI = new SugoAPI(new SugoAPI.FileSender());
+            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_daily_message/message", true, "yyyy-MM-dd_HH-mm"));
+//            mSugoAPI = new SugoAPI(new SugoAPI.FileSender(false));
             mMessageQueue = messageQueue;
         }
 
@@ -79,7 +80,6 @@ public class SugoAPIDemo {
             props.put(name + "_key", name + "_value");
             // 产生数据
             JSONObject message = messageBuilder.event("your distinct id", name, props);
-            logger.info("demo generate data : " + message.toString());
             messageQueue.add(message);
         }
 
