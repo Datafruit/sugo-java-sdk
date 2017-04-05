@@ -1,6 +1,11 @@
-package io.sugo.sugojavasdk;
+package io.sugo.sugojavasdkdemo;
 
+import io.sugo.sugojavasdk.MessageBuilder;
+import io.sugo.sugojavasdk.MessagePackage;
+import io.sugo.sugojavasdk.SugoAPI;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Queue;
@@ -59,6 +64,9 @@ public class SugoAPIDemo {
     }
 
     public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(SugoAPIDemo.class);
+        logger.info("sugo java sdk demo starting ...");
+
         MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
         Queue<JSONObject> messageQueue = new ConcurrentLinkedQueue<JSONObject>();
         SendingThread worker = new SendingThread(messageQueue);
@@ -71,6 +79,7 @@ public class SugoAPIDemo {
             props.put(name + "_key", name + "_value");
             // 产生数据
             JSONObject message = messageBuilder.event("your distinct id", name, props);
+            logger.info("demo generate data : " + message.toString());
             messageQueue.add(message);
         }
 

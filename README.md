@@ -18,7 +18,7 @@ Java SDK of Sugo
 数据可以被发送至终端服务器，也可以保存为文件，这取决于`SugoAPI`构造函数的参数。   
 
 - `FileSender`   
-将数据保存到指定文件下，文件达到指定大小时，会自动更名。可以配置文件的最大容量和文件的个数。
+将数据保存到指定文件下，文件达到指定大小时，会自动更名。可以配置文件的最大容量和文件的个数。   
 例如配置的滚动文件名为rolling.log，文件最大为10KB，最大数量是 100。   
 当rolling.log达到10KB时，会自动更名为rolling.log1,rolling.log2,rolling.log3………………直到 rolling.log100。
 

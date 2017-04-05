@@ -216,31 +216,34 @@ public class SugoAPI {
                 maxFileSize = SugoConfig.sMaxFileSize;
             }
             Properties properties = new Properties();
-//            properties.put("log4j.rootLogger", "INFO,consoleAppender");
-            properties.put("log4j.rootLogger", "INFO,consoleAppender,fileAppender");
-//            properties.put("log4j.rootLogger","INFO,consoleAppender,dailyFileAppender");
+//            properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoConsole");               // 只输出到控制台
+            properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoConsole,sugoFile");        // 输出到控制台和文件（按容量增加）
+//            properties.put("log4j.logger.io.sugo.sugojavasdk","INFO,sugoConsole,sugoDailyFile");  // 输出到控制台和文件（按日期增加）
 
-            properties.put("log4j.appender.consoleAppender", "org.apache.log4j.ConsoleAppender");
-            properties.put("log4j.appender.consoleAppender.Threshold", "INFO");
-            properties.put("log4j.appender.consoleAppender.layout", "org.apache.log4j.PatternLayout");
-            properties.put("log4j.appender.consoleAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss SSS} ->[%t]--[%-5p]--[%c{1}]--%m%n");
+            properties.put("log4j.additivity.sugoConsole", "false");       // 设置这个子 Logger 输出日志不在父级别 Logger 里面输出
+            properties.put("log4j.appender.sugoConsole", "org.apache.log4j.ConsoleAppender");
+            properties.put("log4j.appender.sugoConsole.Threshold", "INFO");
+            properties.put("log4j.appender.sugoConsole.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.sugoConsole.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss SSS} ->[%t]--[%-5p]--[%c{1}]--%m%n");
 
-            properties.put("log4j.appender.fileAppender", "org.apache.log4j.RollingFileAppender");
-            properties.put("log4j.appender.fileAppender.File", messageFile);
-            properties.put("log4j.appender.fileAppender.Threshold", "INFO");
-            properties.put("log4j.appender.fileAppender.Encoding", "UTF-8");
-            properties.put("log4j.appender.fileAppender.layout", "org.apache.log4j.PatternLayout");
-            properties.put("log4j.appender.fileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
-            properties.put("log4j.appender.fileAppender.MaxBackupIndex", maxBackup);
-            properties.put("log4j.appender.fileAppender.MaxFileSize", maxFileSize);
+            properties.put("log4j.additivity.sugoFile", "false");       // 设置这个子 Logger 输出日志不在父级别 Logger 里面输出
+            properties.put("log4j.appender.sugoFile", "org.apache.log4j.RollingFileAppender");
+            properties.put("log4j.appender.sugoFile.File", messageFile);
+            properties.put("log4j.appender.sugoFile.Threshold", "INFO");
+            properties.put("log4j.appender.sugoFile.Encoding", "UTF-8");
+            properties.put("log4j.appender.sugoFile.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.sugoFile.layout.ConversionPattern", "%m%n");
+            properties.put("log4j.appender.sugoFile.MaxBackupIndex", maxBackup);
+            properties.put("log4j.appender.sugoFile.MaxFileSize", maxFileSize);
 
-            properties.put("log4j.appender.dailyFileAppender", "org.apache.log4j.DailyRollingFileAppender");
-            properties.put("log4j.appender.dailyFileAppender.File", messageFile);
-            properties.put("log4j.appender.dailyFileAppender.DatePattern", "'_'yyyy-MM-dd'.log'");
-            properties.put("log4j.appender.dailyFileAppender.Threshold", "INFO");
-            properties.put("log4j.appender.dailyFileAppender.Encoding", "UTF-8");
-            properties.put("log4j.appender.dailyFileAppender.layout", "org.apache.log4j.PatternLayout");
-            properties.put("log4j.appender.dailyFileAppender.layout.ConversionPattern", "%d{yyyy-MM-dd HH:mm:ss}--%m%n");
+            properties.put("log4j.additivity.sugoDailyFile", "false");       // 设置这个子 Logger 输出日志不在父级别 Logger 里面输出
+            properties.put("log4j.appender.sugoDailyFile", "org.apache.log4j.DailyRollingFileAppender");
+            properties.put("log4j.appender.sugoDailyFile.File", messageFile);
+            properties.put("log4j.appender.sugoDailyFile.DatePattern", "'_'yyyy-MM-dd'.log'");
+            properties.put("log4j.appender.sugoDailyFile.Threshold", "INFO");
+            properties.put("log4j.appender.sugoDailyFile.Encoding", "UTF-8");
+            properties.put("log4j.appender.sugoDailyFile.layout", "org.apache.log4j.PatternLayout");
+            properties.put("log4j.appender.sugoDailyFile.layout.ConversionPattern", "%m%n");
 
             PropertyConfigurator.configure(properties);
 
