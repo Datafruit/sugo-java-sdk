@@ -197,7 +197,7 @@ public class SugoAPI {
         }
 
         public FileSender(String messageFile, boolean daily) {
-            this(messageFile, SugoConfig.sMaxBackupIndex, SugoConfig.sMaxFileSize, daily, "yyyy-MM-dd");
+            this(messageFile, SugoConfig.sMaxBackupIndex, SugoConfig.sMaxFileSize, daily, "yyyyMMdd");
         }
 
         public FileSender(String messageFile, String maxBackup, String maxFileSize) {
@@ -211,9 +211,9 @@ public class SugoAPI {
         /**
          * @param messageFile 存放 message 数据的文件名字（超过存量之后，会被转移到新生成的文件里）
          * @param maxBackup   如果是按容量存储数据，该参数表示最大的文件数量
-         * @param maxFileSize 如果是按容量存储数据，该参数表示数据文件的容量限度
-         * @param daily       是否是按时间存储数据，false 则是按容量存储
-         * @param dataPattern 如果是按时间存储数据，该参数表示生成的文件的时间后缀
+         * @param maxFileSize 如果是按容量存储数据，该参数表示数据文件的容量限度（单位是 KB MB）
+         * @param daily       是否是按时间存储数据，false 则是按容量存储（默认是 false）
+         * @param dataPattern 如果是按时间存储数据，该参数表示生成的文件的时间后缀（默认是按天 yyyyMMdd ）
          */
         public FileSender(String messageFile, String maxBackup, String maxFileSize, boolean daily, String dataPattern) {
             if (messageFile == null || messageFile.equals("")) {
@@ -250,7 +250,7 @@ public class SugoAPI {
 
             properties.put("log4j.appender.sugoDailyFile", "org.apache.log4j.DailyRollingFileAppender");
             properties.put("log4j.appender.sugoDailyFile.File", messageFile);
-            properties.put("log4j.appender.sugoDailyFile.DatePattern", "'_'" + dataPattern + "'.log'");
+            properties.put("log4j.appender.sugoDailyFile.DatePattern", "'_'" + dataPattern);
             properties.put("log4j.appender.sugoDailyFile.Threshold", "INFO");
             properties.put("log4j.appender.sugoDailyFile.Encoding", "UTF-8");
             properties.put("log4j.appender.sugoDailyFile.layout", "org.apache.log4j.PatternLayout");

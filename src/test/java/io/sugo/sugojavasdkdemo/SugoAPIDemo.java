@@ -29,8 +29,8 @@ public class SugoAPIDemo {
         private final Queue<JSONObject> mMessageQueue;
 
         public SendingThread(Queue<JSONObject> messageQueue) {
-            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_daily_message/message", true, "yyyy-MM-dd_HH-mm"));
-//            mSugoAPI = new SugoAPI(new SugoAPI.FileSender(false));
+//            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_daily_message/message", true, "yyyyMMdd'T'HHmm"));
+            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_message/message","50","10KB"));
             mMessageQueue = messageQueue;
         }
 

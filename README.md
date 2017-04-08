@@ -18,9 +18,16 @@ Java SDK of Sugo
 数据可以被发送至终端服务器，也可以保存为文件，这取决于`SugoAPI`构造函数的参数。   
 
 - `FileSender`   
-将数据保存到指定文件下，文件达到指定大小时，会自动更名。可以配置文件的最大容量和文件的个数。   
-例如配置的滚动文件名为rolling.log，文件最大为10KB，最大数量是 100。   
-当rolling.log达到10KB时，会自动更名为rolling.log1,rolling.log2,rolling.log3………………直到 rolling.log100。
+将数据保存到指定文件下，可选择按大小或者按时间保存（daily 参数设为 true 则是按时间保存）。   
+
+若是按大小，文件达到指定大小时，会自动更名。可以配置文件的最大容量和文件的个数。   
+例如配置的滚动文件名为 message，文件最大为 10KB，最大数量是 100。   
+当 message 达到 10KB 时，会自动更名为 message.1,message.2,message.3 ……………… 直到 message.100。   
+（旧数据被往上顶，后缀数字越大的文件，其数据越老）   
+
+若是按时间，SDK 会自动将数据按指定的 dataPattern 保存，生成文件的频率为 dataPattern 中最小的时间单位。   
+例如配置的滚动文件名为 message， dataPattern 为 yyyyMMdd'T'HHmm    
+则文件名为 message_20170401T2035   
 
 
 - `ConsoleSender`  
@@ -52,11 +59,11 @@ Java SDK of Sugo
 
 ```json   
 
-2017-03-29 21:04:57--[{"event":"testEventName","properties":{"distinct_id":"your distinct id","time":1490792691,"sugo_lib":"jdk","token":"project token","key":"value"}}]
+[{"event":"testEventName","properties":{"distinct_id":"your distinct id","time":1490792691,"sugo_lib":"jdk","token":"project token","key":"value"}}]
 
 ```  
 
-单条数据格式：   
+其中，单条数据格式：   
 ```json   
 {
     "event": "testEventName",
