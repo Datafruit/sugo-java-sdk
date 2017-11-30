@@ -21,8 +21,10 @@ class DefaultWorker {
         mMessageBuilder = new MessageBuilder(token);
         mMessagePackage = new MessagePackage();
 
+        // 队列长度可在　ＳugoConfig 中配置
         mMessageQueue = new LinkedBlockingQueue<>(SugoConfig.DEFAULT_WORKER_QUEＵE_CAPACITY);
 
+        // 跟据配置创建消费线程数
         for (int i = 0; i < SugoConfig.DEFAULT_WORKER_CUSTOMER_COUNT; i++) {
             Executors.newSingleThreadExecutor().submit(new CustomerWorker());
         }

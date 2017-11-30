@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 /**
  * Sugo 数据采集简易接口（发送数据）, 用于服务器端应用程序.
  * 本 Java API 没有提供和假设任何线程模型, 这样设计的目的是为了可以轻松地将记录数据和发送数据的操作分开。
+ *
+ * @author ouwenjie
  */
 public class SugoAPI {
 
@@ -31,6 +33,13 @@ public class SugoAPI {
         mSender = sender;
     }
 
+    /**
+     * 如果使用默认的　worker 线程，应该将　SugoAPI 封装为单例
+     *
+     * @param sender
+     * @param useDefaultWorker
+     * @param token
+     */
     public SugoAPI(Sender sender, boolean useDefaultWorker, String token) {
         this(sender);
         mDefaultWorker = new DefaultWorker(sender, token);
