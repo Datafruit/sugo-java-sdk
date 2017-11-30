@@ -41,10 +41,9 @@ public class MessagePackage {
         boolean ret = true;
         try {
             String eventName = message.getString("event");
-            JSONObject propertiesObj = message.getJSONObject("properties");
             if (eventName == null) {
                 ret = false;
-            } else if (!propertiesObj.has("time")) {
+            } else if (!message.has("time")) {
                 ret = false;
             }
 

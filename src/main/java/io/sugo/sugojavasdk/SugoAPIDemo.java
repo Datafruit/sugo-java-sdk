@@ -17,8 +17,10 @@ public class SugoAPIDemo {
 
         SugoAPI sugoAPI = new SugoAPI(new SugoAPI.FileSender(true));
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("test", "value");
         for (int i = 0; i < 100; i++) {
-            sugoAPI.event("TestEvent" + i, new JSONObject());
+            sugoAPI.event("TestEvent" + i, jsonObject);
         }
 
     }
