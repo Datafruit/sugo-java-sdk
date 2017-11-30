@@ -13,31 +13,29 @@ class DefaultWorker {
     private SugoAPI.Sender mSender;
     private MessageBuilder mMessageBuilder;
     private MessagePackage mMessagePackage;
-    private CustomerWorker mCustomerWorker;
-    private ThreadPoolExecutor mExecutor;
 
     private BlockingQueue<JSONObject> mMessageQueue;
-
 
     DefaultWorker(SugoAPI.Sender sender, String token) {
         mSender = sender;
         mMessageBuilder = new MessageBuilder(token);
         mMessagePackage = new MessagePackage();
-        mCustomerWorker = new CustomerWorker();
 
-        mMessageQueue = new LinkedBlockingQueue<>();
-        mExecutor = new ThreadPoolExecutor(8, 12, 30, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<Runnable>(10000), new ThreadPoolExecutor.AbortPolicy());
+        mMessageQueue = new LinkedBlockingQueue<>(SugoConfig.DEFAULT_WORKER_QUEＵE_CAPACITY);
 
-        for (int i = 0; i < SugoConfig.CUSTOMER_THREAD_COUNT; i++) {
-            Executors.newSingleThreadExecutor().submit(mCustomerWorker);
+        for (int i = 0; i < SugoConfig.DEFAULT_WORKER_CUSTOMER_COUNT; i++) {
+            Executors.newSingleThreadExecutor().submit(new CustomerWorker());
         }
     }
 
     void event(String eventName, JSONObject properties) {
         JSONObject eventObj = mMessageBuilder.event(eventName, properties);
         if (mMessagePackage.isValidMessage(eventObj)) {
-            mExecutor.execute(new ProducerWorker(eventObj));
+            try {
+                mMessageQueue.put(eventObj);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             throw new SugoMessageException("Given JSONObject was not a valid Sugo message", eventObj);
         }
@@ -47,28 +45,7 @@ class DefaultWorker {
         return mSender.sendData(dataString);
     }
 
-    class ProducerWorker implements Runnable {
-
-        JSONObject message;
-
-        ProducerWorker(JSONObject message) {
-            this.message = message;
-        }
-
-        @Override
-        public void run() {
-            try {
-                mMessageQueue.put(message);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     class CustomerWorker implements Runnable {
-
-        CustomerWorker() {
-        }
 
         @Override
         public void run() {

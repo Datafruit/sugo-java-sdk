@@ -54,8 +54,7 @@ public class SugoAPI {
      * @throws SugoMessageException if the given JSONObject is not (apparently) a Sugo message. This is a RuntimeException, callers should take care to submit only correctly formatted messages.
      * @throws IOException          if
      */
-    public void sendMessage(JSONObject message)
-            throws SugoMessageException, IOException {
+    public void sendMessage(JSONObject message) throws SugoMessageException, IOException {
         MessagePackage messagePackage = new MessagePackage();
         messagePackage.addMessage(message);
         sendMessages(messagePackage);

@@ -65,8 +65,9 @@ public class SugoAPIDemo {
         logger.info("sugo java sdk demo starting ...");
 
         SugoAPI sugoAPI = new SugoAPI(new SugoAPI.FileSender(true), true, "token");
-        for (int i = 0; i < 10000; i++) {
-            sugoAPI.event("test" + i, new JSONObject());
+
+        for (int i = 0; i < 100000; i++) {
+            sugoAPI.event("nopl" + i, new JSONObject());
         }
 
 //        MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
