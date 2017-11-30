@@ -16,16 +16,42 @@ import java.util.logging.Logger;
 /**
  * Sugo 数据采集简易接口（发送数据）, 用于服务器端应用程序.
  * 本 Java API 没有提供和假设任何线程模型, 这样设计的目的是为了可以轻松地将记录数据和发送数据的操作分开。
+ *
+ * @author ouwenjie
  */
 public class SugoAPI {
 
     private Sender mSender;
+
+    private DefaultWorker mDefaultWorker;
+    private boolean mUserDefaultWorker;
 
     /**
      * @param sender
      */
     public SugoAPI(Sender sender) {
         mSender = sender;
+    }
+
+    /**
+     * 如果使用默认的　worker 线程，应该将　SugoAPI 封装为单例
+     *
+     * @param sender
+     * @param useDefaultWorker
+     * @param token
+     */
+    public SugoAPI(Sender sender, boolean useDefaultWorker, String token) {
+        this(sender);
+        mDefaultWorker = new DefaultWorker(sender, token);
+        mUserDefaultWorker = useDefaultWorker;
+    }
+
+    public void event(String eventName, JSONObject properties) {
+        if (mDefaultWorker != null && mUserDefaultWorker) {
+            mDefaultWorker.event(eventName, properties);
+        } else {
+            throw new SugoMessageException("the default worker is not work!", new JSONObject());
+        }
     }
 
     /**
@@ -37,8 +63,7 @@ public class SugoAPI {
      * @throws SugoMessageException if the given JSONObject is not (apparently) a Sugo message. This is a RuntimeException, callers should take care to submit only correctly formatted messages.
      * @throws IOException          if
      */
-    public void sendMessage(JSONObject message)
-            throws SugoMessageException, IOException {
+    public void sendMessage(JSONObject message) throws SugoMessageException, IOException {
         MessagePackage messagePackage = new MessagePackage();
         messagePackage.addMessage(message);
         sendMessages(messagePackage);
@@ -120,6 +145,7 @@ public class SugoAPI {
             mEventsEndpoint = eventsEndpoint;
         }
 
+        @Override
         public boolean sendData(String dataString) {
             URL endpoint = null;
             OutputStream postStream = null;
@@ -261,6 +287,7 @@ public class SugoAPI {
             mLogger = org.slf4j.LoggerFactory.getLogger(FileSender.class);
         }
 
+        @Override
         public boolean sendData(String dataString) {
             if (dataString == null) {
                 return false;
@@ -283,6 +310,7 @@ public class SugoAPI {
             mLogger = Logger.getLogger(logTag);
         }
 
+        @Override
         public boolean sendData(String dataString) {
             mLogger.info(dataString);
             return true;

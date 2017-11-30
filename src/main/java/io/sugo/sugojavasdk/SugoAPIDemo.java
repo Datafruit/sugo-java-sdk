@@ -1,19 +1,15 @@
-package io.sugo.sugojavasdkdemo;
+package io.sugo.sugojavasdk;
 
-import io.sugo.sugojavasdk.MessageBuilder;
-import io.sugo.sugojavasdk.MessagePackage;
-import io.sugo.sugojavasdk.SugoAPI;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Queue;
-import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Created by Administrator on 2017/3/27.
+ * @author Administrator
+ * @date 2017/3/27
  */
 public class SugoAPIDemo {
 
@@ -30,7 +26,7 @@ public class SugoAPIDemo {
 
         public SendingThread(Queue<JSONObject> messageQueue) {
 //            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_daily_message/message", true, "yyyyMMdd'T'HHmm"));
-            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_message/message","50","10KB"));
+            mSugoAPI = new SugoAPI(new SugoAPI.FileSender("./sugo_message/message", "50", "10KB"));
             mMessageQueue = messageQueue;
         }
 
@@ -68,20 +64,26 @@ public class SugoAPIDemo {
         Logger logger = LoggerFactory.getLogger(SugoAPIDemo.class);
         logger.info("sugo java sdk demo starting ...");
 
-        MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
-        Queue<JSONObject> messageQueue = new ConcurrentLinkedQueue<JSONObject>();
-        SendingThread worker = new SendingThread(messageQueue);
-        worker.start();
+        SugoAPI sugoAPI = new SugoAPI(new SugoAPI.FileSender(true), true, "token");
 
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            String name = scanner.nextLine();  // 不断从控制台输入读取一行数据
-            JSONObject props = new JSONObject();
-            props.put(name + "_key", name + "_value");
-            // 产生数据
-            JSONObject message = messageBuilder.event("your distinct id", name, props);
-            messageQueue.add(message);
+        for (int i = 0; i < 100000; i++) {
+            sugoAPI.event("nopl" + i, new JSONObject());
         }
+
+//        MessageBuilder messageBuilder = new MessageBuilder(PROJECT_TOKEN);
+//        Queue<JSONObject> messageQueue = new ConcurrentLinkedQueue<JSONObject>();
+//        SendingThread worker = new SendingThread(messageQueue);
+//        worker.start();
+//
+//        Scanner scanner = new Scanner(System.in);
+//        while (true) {
+//            String name = scanner.nextLine();  // 不断从控制台输入读取一行数据
+//            JSONObject props = new JSONObject();
+//            props.put(name + "_key", name + "_value");
+//            // 产生数据
+//            JSONObject message = messageBuilder.event("your distinct id", name, props);
+//            messageQueue.add(message);
+//        }
 
     }
 

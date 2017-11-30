@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * 一个 MessagePackage 可以用来发送多个 message.（装载数据）
+ *
+ * @author root
  */
 public class MessagePackage {
 

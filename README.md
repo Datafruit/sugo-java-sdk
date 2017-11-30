@@ -75,4 +75,12 @@ Java SDK of Sugo
       "key": "value"
     }
 }
-```
+```   
+
+## 使用默认的线程模型  
+>  本 API 没有提供和假设任何线程模型, 这样设计的目的是为了可以轻松地将记录数据和发送数据的操作分开。   
+
+但我们仍然提供了默认的实现，通过调用构造函数　`SugoAPI(sender, true, token)` 即可开启默认的处理线程。　　　
+之后发布　message ，调用　`sugoAPI.event(name,properties);` 即可。　　　
+并且，可以跟据自己的数据量，调整　`SugoConfig.DEFAULT_WORKER_CUSTOMER_COUNT` 和　`SugoConfig.DEFAULT_WORKER_QUEＵE_CAPACITY`   
+前者调整读取并发送数据的线程数，后者调整数据队列的最大长度。（若数据队列爆满，则　sugoAPI.event()　将被阻塞，直到队列有空闲空间   
