@@ -41,13 +41,8 @@ Java SDK of Sugo
 单条数据格式：   
 ```json   
 {
-    "event": "testEventName",
-    "properties": {
-      "distinct_id": "your distinct id",
-      "time": 1490754297,
-      "sugo_lib": "jdk",
-      "token": "project token",
-      "key": "value"
-    }
+	"test": "value",
+	"time": 1512033285534,
+	"event": "TestEvent99"
 }
 ```   

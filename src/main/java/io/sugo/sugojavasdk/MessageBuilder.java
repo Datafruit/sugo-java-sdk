@@ -43,8 +43,6 @@ public class MessageBuilder {
 
         // Nothing below should EVER throw a JSONException.
         try {
-            JSONObject dataObj = new JSONObject();
-            dataObj.put("event", eventName);
 
             JSONObject propertiesObj = null;
             if (properties == null) {
@@ -60,7 +58,8 @@ public class MessageBuilder {
                 propertiesObj.put("distinct_id", distinctId);
             }
 
-            dataObj.put("properties", propertiesObj);
+            JSONObject dataObj = new JSONObject(propertiesObj.toString());
+            dataObj.put("event", eventName);
 
             return dataObj;
         } catch (JSONException e) {
