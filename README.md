@@ -3,6 +3,19 @@ Java SDK of Sugo
 
 ## 使用  
 
+## 1 默认使用  
+>  调用者自行维持　sugoAPI 的单例
+
+１　调用构造函数　`SugoAPI(sender, true, token)`.   
+２　记录　message ，调用　`sugoAPI.event(name,properties);` 即可。   
+３　（可选）可以跟据自己的数据量，调整读取并发送数据的线程数　`SugoConfig.DEFAULT_WORKER_CUSTOMER_COUNT`.   
+４　（可选）可以调整数据队列的最大长度　`SugoConfig.DEFAULT_WORKER_QUEＵE_CAPACITY`.   
+   
+
+
+## 2 自定义使用　　
+> 自行实现线程模型, 如果需要将记录数据和发送数据的操作分开的话。   
+
 **1 生成数据** (`MessageBuilder`)  
 使用 `MessageBuilder.event()` 可以创建一条数据  
 

@@ -27,7 +27,7 @@ import java.util.logging.Logger;
     /**
      * defaultWorker 中，消费日志队列的线程数，如果
      */
-    public static final int DEFAULT_WORKER_CUSTOMER_COUNT = 6;
+    public static final int DEFAULT_WORKER_CUSTOMER_COUNT = 2;
 
     /**
      * defaultWorker 中，队列的最大长度，当队列满的时候，put 将被阻塞
