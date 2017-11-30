@@ -21,11 +21,28 @@ public class SugoAPI {
 
     private Sender mSender;
 
+    private DefaultWorker mDefaultWorker;
+    private boolean mUserDefaultWorker;
+
     /**
      * @param sender
      */
     public SugoAPI(Sender sender) {
         mSender = sender;
+    }
+
+    public SugoAPI(Sender sender, boolean useDefaultWorker, String token) {
+        this(sender);
+        mDefaultWorker = new DefaultWorker(sender, token);
+        mUserDefaultWorker = useDefaultWorker;
+    }
+
+    public void event(String eventName, JSONObject properties) {
+        if (mDefaultWorker != null && mUserDefaultWorker) {
+            mDefaultWorker.event(eventName, properties);
+        } else {
+            throw new SugoMessageException("the default worker is not work!", new JSONObject());
+        }
     }
 
     /**
@@ -120,6 +137,7 @@ public class SugoAPI {
             mEventsEndpoint = eventsEndpoint;
         }
 
+        @Override
         public boolean sendData(String dataString) {
             URL endpoint = null;
             OutputStream postStream = null;
@@ -261,6 +279,7 @@ public class SugoAPI {
             mLogger = org.slf4j.LoggerFactory.getLogger(FileSender.class);
         }
 
+        @Override
         public boolean sendData(String dataString) {
             if (dataString == null) {
                 return false;
@@ -283,6 +302,7 @@ public class SugoAPI {
             mLogger = Logger.getLogger(logTag);
         }
 
+        @Override
         public boolean sendData(String dataString) {
             mLogger.info(dataString);
             return true;

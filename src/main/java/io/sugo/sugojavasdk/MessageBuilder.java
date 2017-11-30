@@ -7,6 +7,8 @@ import org.json.JSONObject;
  * 这个类是给 SugoAPI 发送的 message 事件创建适当形式的 JSONObjects（生产数据）
  * 这个类的实例可以单独实例化，和 SugoAPI 的对象分开
  * 因此这些 message 可以从适当的队列中得到，或者通过本地网络发送
+ *
+ * @author root
  */
 public class MessageBuilder {
 
@@ -14,6 +16,10 @@ public class MessageBuilder {
 
     public MessageBuilder(String token) {
         mToken = token;
+    }
+
+    public JSONObject event(String eventName, JSONObject properties) {
+        return event(null, eventName, properties);
     }
 
     /***
@@ -43,12 +49,19 @@ public class MessageBuilder {
                 propertiesObj = new JSONObject(properties.toString());
             }
 
-            if (!propertiesObj.has("token")) propertiesObj.put("token", mToken);
-            if (!propertiesObj.has("time")) propertiesObj.put("time", time);
-            if (!propertiesObj.has("sugo_lib")) propertiesObj.put("sugo_lib", "jdk");
+            if (!propertiesObj.has("token")) {
+                propertiesObj.put("token", mToken);
+            }
+            if (!propertiesObj.has("time")) {
+                propertiesObj.put("time", time);
+            }
+            if (!propertiesObj.has("sugo_lib")) {
+                propertiesObj.put("sugo_lib", "jdk");
+            }
 
-            if (distinctId != null)
+            if (distinctId != null) {
                 propertiesObj.put("distinct_id", distinctId);
+            }
 
             dataObj.put("properties", propertiesObj);
 
