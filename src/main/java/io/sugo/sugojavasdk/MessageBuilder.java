@@ -14,6 +14,10 @@ public class MessageBuilder {
 
     private final String mToken;
 
+    public MessageBuilder() {
+        mToken = null;
+    }
+
     public MessageBuilder(String token) {
         mToken = token;
     }
@@ -35,7 +39,7 @@ public class MessageBuilder {
      *           identified user (for example { 'MemberSince' : '2012-01-10' } or { 'TotalMemory' : '10TB' })
      */
     public JSONObject event(String distinctId, String eventName, JSONObject properties) {
-        long time = System.currentTimeMillis() / 1000;
+        long time = System.currentTimeMillis();
 
         // Nothing below should EVER throw a JSONException.
         try {
@@ -48,15 +52,8 @@ public class MessageBuilder {
             } else {
                 propertiesObj = new JSONObject(properties.toString());
             }
-
-            if (!propertiesObj.has("token")) {
-                propertiesObj.put("token", mToken);
-            }
             if (!propertiesObj.has("time")) {
                 propertiesObj.put("time", time);
-            }
-            if (!propertiesObj.has("sugo_lib")) {
-                propertiesObj.put("sugo_lib", "jdk");
             }
 
             if (distinctId != null) {

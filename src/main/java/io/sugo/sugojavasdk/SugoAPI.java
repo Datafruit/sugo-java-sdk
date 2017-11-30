@@ -16,38 +16,44 @@ import java.util.logging.Logger;
 /**
  * Sugo 数据采集简易接口（发送数据）, 用于服务器端应用程序.
  * 本 Java API 没有提供和假设任何线程模型, 这样设计的目的是为了可以轻松地将记录数据和发送数据的操作分开。
+ * 当　advanceWorker　为　false 时，提供默认的实现
  *
  * @author ouwenjie
  */
 public class SugoAPI {
 
     private Sender mSender;
-
     private DefaultWorker mDefaultWorker;
-    private boolean mUserDefaultWorker;
+    private boolean mAdvanceWorker = false;
 
-    /**
-     * @param sender
-     */
-    public SugoAPI(Sender sender) {
-        mSender = sender;
+    public SugoAPI() {
+        this(null);
     }
 
     /**
      * 如果使用默认的　worker 线程，应该将　SugoAPI 封装为单例
      *
      * @param sender
-     * @param useDefaultWorker
-     * @param token
      */
-    public SugoAPI(Sender sender, boolean useDefaultWorker, String token) {
-        this(sender);
-        mDefaultWorker = new DefaultWorker(sender, token);
-        mUserDefaultWorker = useDefaultWorker;
+    public SugoAPI(Sender sender) {
+        this(sender, false);
+    }
+
+    /**
+     * @param sender
+     * @param advanceWorker
+     */
+    public SugoAPI(Sender sender, boolean advanceWorker) {
+        if (sender == null) {
+            sender = new ConsoleSender();
+        }
+        mSender = sender;
+        mAdvanceWorker = advanceWorker;
+        mDefaultWorker = new DefaultWorker(mSender);
     }
 
     public void event(String eventName, JSONObject properties) {
-        if (mDefaultWorker != null && mUserDefaultWorker) {
+        if (mDefaultWorker != null && (!mAdvanceWorker)) {
             mDefaultWorker.event(eventName, properties);
         } else {
             throw new SugoMessageException("the default worker is not work!", new JSONObject());
@@ -126,7 +132,7 @@ public class SugoAPI {
     /**
      * 包访问权限是为了 mock 测试
      */
-    /* package */ boolean senderSendData(String dataString) {
+    boolean senderSendData(String dataString) {
         return mSender.sendData(dataString);
     }
 

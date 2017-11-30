@@ -16,9 +16,9 @@ class DefaultWorker {
 
     private BlockingQueue<JSONObject> mMessageQueue;
 
-    DefaultWorker(SugoAPI.Sender sender, String token) {
+    DefaultWorker(SugoAPI.Sender sender) {
         mSender = sender;
-        mMessageBuilder = new MessageBuilder(token);
+        mMessageBuilder = new MessageBuilder();
         mMessagePackage = new MessagePackage();
 
         // 队列长度可在　ＳugoConfig 中配置

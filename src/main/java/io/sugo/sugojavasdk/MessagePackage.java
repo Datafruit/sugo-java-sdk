@@ -42,10 +42,11 @@ public class MessagePackage {
         try {
             String eventName = message.getString("event");
             JSONObject propertiesObj = message.getJSONObject("properties");
-            if (eventName == null) ret = false;
-            else if (!propertiesObj.has("token")) ret = false;
-            else if (!propertiesObj.has("time")) ret = false;
-            else if (!propertiesObj.has("sugo_lib")) ret = false;
+            if (eventName == null) {
+                ret = false;
+            } else if (!propertiesObj.has("time")) {
+                ret = false;
+            }
 
         } catch (JSONException e) {
             ret = false;
