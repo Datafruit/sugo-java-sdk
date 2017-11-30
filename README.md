@@ -13,21 +13,7 @@ Java SDK of Sugo
    
 
 
-## 2 自定义使用　　
-> 自行实现线程模型, 如果需要将记录数据和发送数据的操作分开的话。   
-
-**1 生成数据** (`MessageBuilder`)  
-使用 `MessageBuilder.event()` 可以创建一条数据  
-
-**2 暂存数据** (`MessagePackage`)  
-使用 `MessagePackage.addMessage()` 来暂存生成的数据   
-> 也可以不暂存数据，直接发送，但是暂存起来批量发送的效率比逐条发送要高的多，所以强烈推荐暂存数据。  
-
-**3 发送数据** (`SugoAPI`)   
-- 发送单条数据（不推荐）--`SugoAPI.sendMessage()`   
-- 发送批量数据--`SugoAPI.sendMessages()`  
-
-**4 发送方式** (`Sender`)  
+**发送方式** (`Sender`)  
 数据可以被发送至终端服务器，也可以保存为文件，这取决于`SugoAPI`构造函数的参数。   
 
 - `FileSender`   
@@ -51,32 +37,7 @@ Java SDK of Sugo
 将数据发送到指定终端   
 
 
-**输出数据格式**   
-例如，调用   
-```java   
-    // 生产数据
-    MessageBuilder messageBuilder = new MessageBuilder("project token");   
-    JSONObejct properties = new JSONObejct();
-    properties.put("key", "value");
-    JSONObject message = messageBuilder.event("your distinct id", "testEventName", properties);   // 得到包装后的 Message  
-    
-    // 暂存生成的数据   
-    MessagePackage messages = new MessagePackage();
-    messages.addMessage(message);
-    
-    // 发送数据   
-    mSugoAPI.sendMessages(messages);
-    
-```   
-输出的数据如下：   
-
-```json   
-
-[{"event":"testEventName","properties":{"distinct_id":"your distinct id","time":1490792691,"sugo_lib":"jdk","token":"project token","key":"value"}}]
-
-```  
-
-其中，单条数据格式：   
+单条数据格式：   
 ```json   
 {
     "event": "testEventName",
@@ -89,11 +50,3 @@ Java SDK of Sugo
     }
 }
 ```   
-
-## 使用默认的线程模型  
->  本 API 没有提供和假设任何线程模型, 这样设计的目的是为了可以轻松地将记录数据和发送数据的操作分开。   
-
-但我们仍然提供了默认的实现，通过调用构造函数　`SugoAPI(sender, true, token)` 即可开启默认的处理线程。　　　
-之后发布　message ，调用　`sugoAPI.event(name,properties);` 即可。　　　
-并且，可以跟据自己的数据量，调整　`SugoConfig.DEFAULT_WORKER_CUSTOMER_COUNT` 和　`SugoConfig.DEFAULT_WORKER_QUEＵE_CAPACITY`   
-前者调整读取并发送数据的线程数，后者调整数据队列的最大长度。（若数据队列爆满，则　sugoAPI.event()　将被阻塞，直到队列有空闲空间   
