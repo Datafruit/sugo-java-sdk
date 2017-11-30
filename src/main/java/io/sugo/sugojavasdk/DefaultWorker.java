@@ -29,8 +29,9 @@ class DefaultWorker {
         mExecutor = new ThreadPoolExecutor(8, 12, 30, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<Runnable>(10000), new ThreadPoolExecutor.AbortPolicy());
 
-        Thread customerThread = new Thread(mCustomerWorker);
-        customerThread.start();
+        for (int i = 0; i < SugoConfig.CUSTOMER_THREAD_COUNT; i++) {
+            Executors.newSingleThreadExecutor().submit(mCustomerWorker);
+        }
     }
 
     void event(String eventName, JSONObject properties) {

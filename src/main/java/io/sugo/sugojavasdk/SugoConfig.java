@@ -23,4 +23,6 @@ import java.util.logging.Logger;
     static final String sMaxBackupIndex = "50";
     static final String sMaxFileSize = "10MB";
 
+    public static final int CUSTOMER_THREAD_COUNT = 5;
+
 }
