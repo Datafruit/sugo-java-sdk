@@ -260,9 +260,9 @@ public class SugoAPI {
             Properties properties = new Properties();
 //            properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoConsole");               // 只输出到控制台
             if (daily) {
-                properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoConsole,sugoDailyFile");  // 输出到控制台和文件（按日期增加）
+                properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoDailyFile");  // 输出到控制台和文件（按日期增加）
             } else {
-                properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoConsole,sugoFile");        // 输出到控制台和文件（按容量增加）
+                properties.put("log4j.logger.io.sugo.sugojavasdk", "INFO,sugoFile");        // 输出到控制台和文件（按容量增加）
             }
             properties.put("log4j.additivity.io.sugo.sugojavasdk", "false");  // 设置这个子 Logger 输出日志不在父级别 Logger 里面输出
 
@@ -282,7 +282,7 @@ public class SugoAPI {
 
             properties.put("log4j.appender.sugoDailyFile", "org.apache.log4j.DailyRollingFileAppender");
             properties.put("log4j.appender.sugoDailyFile.File", messageFile);
-            properties.put("log4j.appender.sugoDailyFile.DatePattern", "'_'" + dataPattern);
+            properties.put("log4j.appender.sugoDailyFile.DatePattern", "'.'" + dataPattern);
             properties.put("log4j.appender.sugoDailyFile.Threshold", "INFO");
             properties.put("log4j.appender.sugoDailyFile.Encoding", "UTF-8");
             properties.put("log4j.appender.sugoDailyFile.layout", "org.apache.log4j.PatternLayout");
